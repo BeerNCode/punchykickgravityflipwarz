@@ -9,6 +9,8 @@ class Entity(pygame.sprite.Sprite):
         super().__init__()
         self.sprites = {}
         self.sprite_index = 0
+        self.animation_delay = 2
+        self.animation_index = 0
 
     def add_sprite(self, sprite_id, sheet, rectangle):
         sprite = sheet.image_at(rectangle)
@@ -29,11 +31,21 @@ class Entity(pygame.sprite.Sprite):
         self.images = self.sprites[sprite_id]
 
     def show(self):
-        self.sprite_index += 1
-        if self.sprite_index >= len(self.images):
-            self.sprite_index = 0
-        self.image = self.images[self.sprite_index]
+        try:
+            self.animation_index += 1
+            if self.animation_index >= self.animation_delay:
+                self.sprite_index += 1
+                self.animation_index = 0
+                if self.sprite_index >= len(self.images):
+                    self.sprite_index = 0
 
-        self.rect = self.image.get_rect()
-        self.rect.x = (self.pos.x-self.rect.width/2)
-        self.rect.y = (self.pos.y-self.rect.height/2)
+            self.image = self.images[self.sprite_index]
+
+            self.rect = self.image.get_rect()
+            self.rect.x = (self.pos.x-self.rect.width/2)
+            self.rect.y = (self.pos.y-self.rect.height/2)
+        except Exception as e:
+            logger.error("Something went wrong displaying the sprite.")
+            logger.exception(e)
+            self.sprite_index = 0
+            self.animation_index = 0
