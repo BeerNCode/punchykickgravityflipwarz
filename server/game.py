@@ -2,7 +2,16 @@ import pygame
 import threading
 import logging
 import colours
-   
+from controls import Controls
+from player import Player
+
+CONTROLS = [
+    {"up": pygame.K_UP,"down": pygame.K_DOWN, "left": pygame.K_LEFT, "right": pygame.K_RIGHT, "space": pygame.K_SPACE},
+    {"up": pygame.K_w,"down": pygame.K_s, "left": pygame.K_a, "right": pygame.K_d, "space": pygame.K_e},
+    {"up": pygame.K_t,"down": pygame.K_g, "left": pygame.K_f, "right": pygame.K_h, "space": pygame.K_y},
+    {"up": pygame.K_i,"down": pygame.K_k, "left": pygame.K_j, "right": pygame.K_l, "space": pygame.K_o}
+]
+
 GAME_SPEED = 60
 CLIENT_TIMEOUT = 1000
 SCREEN_WIDTH = 1024
@@ -19,14 +28,15 @@ class Game:
         self.start_ticks=pygame.time.get_ticks()
         self.running = True
 
-    def run(self):
+        self.players.append(Player("Bob", Controls(keys=CONTROLS[0])))
 
+    def run(self):
         while self.running:
             pygame.event.pump()
             self.update_events()
             
             for player in self.players:
-                player.update(self.world)
+                player.update()
 
             self.render()
             
@@ -48,6 +58,15 @@ class Game:
 
     def render(self):
         self.screen.fill(colours.LIGHT_GREY)
+        player_sprites = pygame.sprite.Group()
+
+        #self.world.show(self.screen)
+       
+        for player in self.players:
+            player.show(self.screen)
+            player_sprites.add(player)
+
+        player_sprites.draw(self.screen)
 
     def update_timer(self):
         seconds=(pygame.time.get_ticks()-self.start_ticks)/1000 
