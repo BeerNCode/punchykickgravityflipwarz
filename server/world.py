@@ -2,7 +2,7 @@ from PIL import Image
 import pygame
 import colours, os
 
-imageFile = os.path.join("resources", "world.png")
+imageFile = os.path.join("server", "resources", "world.png")
 
 class World:
     
