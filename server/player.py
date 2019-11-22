@@ -34,9 +34,9 @@ class Player(Entity):
 
         sheet = sprite_sheet.spritesheet(os.path.join('server', 'resources','player.png'))
         super().add_sprite("stood_right", sheet, (0, 0, tile_size, tile_size))
-        super().add_sprite("stood_left", sheet, (0, tile_size, tile_size, tile_size))
+        super().add_sprite("stood_left", sheet, (3*tile_size, tile_size, tile_size, tile_size))
         super().add_sprites("walking_right", sheet, (tile_size, 0, tile_size, tile_size), 3, (tile_size, 0))
-        super().add_sprites("walking_left", sheet, (tile_size, tile_size, tile_size, tile_size), 3, (tile_size, 0))
+        super().add_sprites("walking_left", sheet, (2*tile_size, tile_size, tile_size, tile_size), 3, (-tile_size, 0))
 
     def capture_inputs(self):
         keys = pygame.key.get_pressed()
