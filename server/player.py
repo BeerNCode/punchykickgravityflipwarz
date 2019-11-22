@@ -12,7 +12,8 @@ from vector import Vector
 
 logger = logging.getLogger(__name__)
 
-PLAYER_SPEED = 3
+PLAYER_JUMP = 10
+PLAYER_SPEED = 5
 PLAYER_RADIUS = 15
 PLAYER_DIAMETER = 2 * PLAYER_RADIUS
 
@@ -24,6 +25,7 @@ class Player(Entity):
         self.name = name
         self.controls = controls
         self.pos = Vector(0, 0)
+        self.vel = Vector(0, 0)
         self.direction = 0
 
         tile_size = 32
@@ -67,17 +69,17 @@ class Player(Entity):
         
         speed = PLAYER_SPEED
 
-        if self.pos.y <= 200:
-            ddy = 0
-            dy = 0
+        ground_level = 200
+
+        if self.pos.y >= ground_level:
+            self.vel.y = 0
             self.pos.y = 200
             if self.key_up:
-                dy = -10
+                self.vel.y = -PLAYER_JUMP
         else:
-            ddy = 9.81
-            dy += ddy * 0.01
+            self.vel.y += 9.81 * 0.05
         
-        self.pos.y += dy
+        self.pos.y += self.vel.y
 
         dx = 0
         movingHorizontally = False
