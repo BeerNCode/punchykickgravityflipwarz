@@ -12,6 +12,7 @@ from vector import Vector
 
 logger = logging.getLogger(__name__)
 
+TILE_SIZE = 32
 PLAYER_JUMP = 10
 PLAYER_SPEED = 5
 PLAYER_RADIUS = 15
@@ -19,7 +20,7 @@ PLAYER_DIAMETER = 2 * PLAYER_RADIUS
 
 class Player(Entity):
 
-    def __init__(self, name, controls):
+    def __init__(self, name, controls, sprite_sheet_file_name):
         super().__init__()
         logger.debug(f"Creating player [{name}].")
         self.name = name
@@ -28,15 +29,13 @@ class Player(Entity):
         self.vel = Vector(0, 0)
         self.direction = 0
 
-        tile_size = 32
-        
         logger.debug(os.getcwd())
 
-        sheet = sprite_sheet.spritesheet(os.path.join('server', 'resources','player.png'))
-        super().add_sprite("stood_right", sheet, (0, 0, tile_size, tile_size))
-        super().add_sprite("stood_left", sheet, (3*tile_size, tile_size, tile_size, tile_size))
-        super().add_sprites("walking_right", sheet, (tile_size, 0, tile_size, tile_size), 3, (tile_size, 0))
-        super().add_sprites("walking_left", sheet, (2*tile_size, tile_size, tile_size, tile_size), 3, (-tile_size, 0))
+        sheet = sprite_sheet.spritesheet(os.path.join('server', 'resources', sprite_sheet_file_name))
+        super().add_sprite("stood_right", sheet, (0, 0, TILE_SIZE, TILE_SIZE))
+        super().add_sprite("stood_left", sheet, (3*TILE_SIZE, TILE_SIZE, TILE_SIZE, TILE_SIZE))
+        super().add_sprites("walking_right", sheet, (TILE_SIZE, 0, TILE_SIZE, TILE_SIZE), 3, (TILE_SIZE, 0))
+        super().add_sprites("walking_left", sheet, (2*TILE_SIZE, TILE_SIZE, TILE_SIZE, TILE_SIZE), 3, (-TILE_SIZE, 0))
 
     def capture_inputs(self):
         keys = pygame.key.get_pressed()

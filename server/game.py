@@ -30,7 +30,8 @@ class Game:
         self.running = True
         self.world = World()
 
-        self.players.append(Player("Bob", Controls(keys=CONTROLS[0])))
+        self.players.append(Player("Bob", Controls(keys=CONTROLS[0]), "player.png"))
+        self.players.append(Player("Dave", Controls(keys=CONTROLS[1]), "player_2.png"))
 
     def run(self):
         while self.running:
