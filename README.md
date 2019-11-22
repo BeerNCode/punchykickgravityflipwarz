@@ -7,4 +7,4 @@ It's in python.
 
 ## Todo
 
-- THe game.
+- The game.
