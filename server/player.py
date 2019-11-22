@@ -68,11 +68,15 @@ class Player(Entity):
         speed = PLAYER_SPEED
 
         if self.pos.y <= 200:
+            ddy = 0
             dy = 0
             self.pos.y = 200
+            if self.key_up:
+                dy = -10
         else:
-            dy = 10
-
+            ddy = -9.81
+            dy += ddy * 0.1
+        
         self.pos.y += dy
 
         dx = 0
