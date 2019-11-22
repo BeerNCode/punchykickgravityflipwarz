@@ -1,8 +1,8 @@
 from PIL import Image
 import pygame
-import colours
+import colours, os
 
-imageFile = "world.png"
+imageFile = os.path.join("resources", "world.png")
 
 class World:
     
