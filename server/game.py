@@ -4,6 +4,7 @@ import logging
 import colours
 from controls import Controls
 from player import Player
+from world import World
 
 CONTROLS = [
     {"up": pygame.K_UP,"down": pygame.K_DOWN, "left": pygame.K_LEFT, "right": pygame.K_RIGHT, "space": pygame.K_SPACE},
@@ -27,6 +28,7 @@ class Game:
         self.clock = pygame.time.Clock()
         self.start_ticks=pygame.time.get_ticks()
         self.running = True
+        self.world = World()
 
         self.players.append(Player("Bob", Controls(keys=CONTROLS[0])))
 
@@ -38,7 +40,7 @@ class Game:
             for player in self.players:
                 player.update()
 
-            self.render()
+            self.render(self.screen)
             
             self.update_timer()
             pygame.display.flip()
@@ -56,11 +58,11 @@ class Game:
                 logger.info(f"Resizing the window to {SCREEN_WIDTH}x{SCREEN_HEIGHT}.")
                 self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.RESIZABLE)
 
-    def render(self):
-        self.screen.fill(colours.LIGHT_GREY)
+    def render(self, screen):
+        #self.screen.fill(colours.LIGHT_GREY)
         player_sprites = pygame.sprite.Group()
 
-        #self.world.show(self.screen)
+        self.world.get_world(self.screen)
        
         for player in self.players:
             player.show(self.screen)
