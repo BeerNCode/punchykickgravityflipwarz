@@ -44,8 +44,8 @@ class Grenades(ItemType):
             grenade.vel_x = -5
         else:
             grenade.vel_x = 5
-
-        grenade.vel_y = -6
+        
+        grenade.vel_y = -2 / self.world.gravity
 
         return (False, [grenade]) # returns whether its used up, and any items needed to be created.
 
@@ -77,11 +77,16 @@ class Item(Entity): # got to be an entity to be rendered
                     self.rect.left = tile.rect.right
                 self.vel_x = 0
 
-            # up/down movement  
-            if self.vel_y == 0:
-                self.vel_y = 1
+            # up/down movement 
+            if self.game.world.gravity < 0:
+                sign = -1
             else:
-                self.vel_y += .35
+                sign = 1
+                
+            if self.vel_y == 0:
+                self.vel_y = 1 * sign
+            else:
+                self.vel_y += self.game.world.gravity
 
             self.rect.y += self.vel_y
             tile_hit_list = pygame.sprite.spritecollide(self, self.game.world.tiles, False)

@@ -42,7 +42,8 @@ class Game:
         self.players.add(Player("Bob", Controls(keys=CONTROLS[0]), "player.png", self))
         self.players.add(Player("Dave", Controls(keys=CONTROLS[1]), "player_2.png", self))
         
-        self.background_surface = pygame.image.load(os.path.join('punchykickgravityflipwarz', 'resources', "sky.png"))
+        for player in self.players:
+            self.world.find_empty_space(player)
 
     def run(self):
         while self.running:
@@ -95,8 +96,7 @@ class Game:
         if self.gravity_timer == 0:
             self.gravity_timer = randint(10,200)
             g = float(randint(-100,100))/100
-            for p in self.players:
-                p.gravity = g
+            self.world.gravity = g
         
     def update_timer(self):
         seconds=(pygame.time.get_ticks()-self.start_ticks)/1000 

@@ -36,19 +36,61 @@ class World:
         self.game = game
         self.tiles = pygame.sprite.Group()
         self.scale = 8
+        self.gravity = 0.35
 
         self.noisy_world = np.zeros((SCREEN_WIDTH, SCREEN_HEIGHT))
         self.noisy_world = self.generate_noise((SCREEN_WIDTH, SCREEN_HEIGHT), SCALE, OCTAVES, PERSISTANCE, LACUNARITY)
-        for i in range(0, int(math.floor(SCREEN_WIDTH/TILE_SIZE))):
-            for j in range(0, int(math.floor(SCREEN_HEIGHT/TILE_SIZE))):
+        for i in range(1, int(math.floor(SCREEN_WIDTH/TILE_SIZE)-1)):
+            for j in range(1, int(math.floor(SCREEN_HEIGHT/TILE_SIZE)-1)):
                 threshold = 1/(0.3*math.pow(j,2) + 1) - 0.1
                 if (self.noisy_world[i][j] > threshold):
                     tile = Tile(i * TILE_SIZE, j * TILE_SIZE)
                     tile.tile_type(self.noisy_world[i][j])
                     self.tiles.add(tile)
+                    
+        # edges
+        for i in range(0, int(math.floor(SCREEN_WIDTH/TILE_SIZE))):
+            for j in [0, int(math.floor(SCREEN_HEIGHT/TILE_SIZE))-1]:
+                tile = Tile(i * TILE_SIZE, j * TILE_SIZE)
+                tile.tile_type(0.99)
+                self.tiles.add(tile)
+        for j in range(0, int(math.floor(SCREEN_HEIGHT/TILE_SIZE))):
+            for i in [0, int(math.floor(SCREEN_WIDTH/TILE_SIZE))-1]:
+                tile = Tile(i * TILE_SIZE, j * TILE_SIZE)
+                tile.tile_type(0.99)
+                self.tiles.add(tile)
 
         self.redraw()
 
+    def find_empty_space(self, tile):
+        """
+        Tries to move a tile into an empty space in the map
+        """
+        
+        timeout = 3000
+        tiles_x = math.ceil(tile.rect.w/TILE_SIZE)
+        tiles_y = math.ceil(tile.rect.h/TILE_SIZE)
+        
+        while(timeout):
+            timeout -= 1
+            
+            x = randint(0, int(math.floor(SCREEN_WIDTH/TILE_SIZE))-tiles_x)
+            y = randint(0, int(math.floor(SCREEN_HEIGHT/TILE_SIZE))-tiles_y)
+            
+            tile.rect.x = x*TILE_SIZE
+            tile.rect.y = y*TILE_SIZE
+            
+            tile_hit_list = pygame.sprite.spritecollide(tile, self.tiles, False)
+
+            suc = True
+            for t in tile_hit_list:
+                if t == tile:
+                    suc = False
+                    break
+            
+            if suc:
+                return
+        
     def redraw(self):
         self.surface = Surface(SCREEN_SIZE).convert()
         self.surface.set_colorkey((0, 0, 0))
@@ -85,6 +127,8 @@ class World:
                                     repeaty=SCREEN_HEIGHT, 
                                     base=0)
                 #print(self.noisy_world[i][j])
+                
+        
         return self.noisy_world
 
 
