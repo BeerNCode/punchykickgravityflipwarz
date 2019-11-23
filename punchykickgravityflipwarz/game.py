@@ -1,3 +1,8 @@
+GAME_SPEED = 60
+CLIENT_TIMEOUT = 1000
+SCREEN_WIDTH = 1280
+SCREEN_HEIGHT = 1024
+
 import pygame, threading, logging
 from random import randint
 import punchykickgravityflipwarz.colours
@@ -13,18 +18,12 @@ CONTROLS = [
     {"up": pygame.K_i,"down": pygame.K_k, "left": pygame.K_j, "right": pygame.K_l, "space": pygame.K_o}
 ]
 
-GAME_SPEED = 60
-CLIENT_TIMEOUT = 1000
-SCREEN_WIDTH = 1024
-SCREEN_HEIGHT = 768
-
 screen_colour = (randint(0,255),randint(0,255),randint(0,255))
 
 logger = logging.getLogger(__name__)
 
 sprite_sheets = {
 }
-
 
 class Game:
    
@@ -36,12 +35,14 @@ class Game:
         self.clock = pygame.time.Clock()
         self.start_ticks=pygame.time.get_ticks()
         self.running = True
-        self.world = World()
+        self.world = World(self)
         
         self.gravity_timer = 300
 
         self.players.add(Player("Bob", Controls(keys=CONTROLS[0]), "player.png", self))
         self.players.add(Player("Dave", Controls(keys=CONTROLS[1]), "player_2.png", self))
+        
+        self.background_surface = pygame.image.load(os.path.join('punchykickgravityflipwarz', 'resources', "sky.png"))
 
     def run(self):
         while self.running:
@@ -50,7 +51,7 @@ class Game:
             
             self.players.update()
             
-            self.gravity()
+            #self.gravity()
             
             # Sort out item logic
             all_new_items = []
@@ -82,7 +83,8 @@ class Game:
                 self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.RESIZABLE)
 
     def draw(self):
-        self.screen.fill(screen_colour)
+        #self.screen.blit(self.background_surface, (0, 0), (0, 0, SCREEN_WIDTH, SCREEN_HEIGHT))
+        self.screen.fill((143, 242, 234))
         self.world.draw(self.screen)
         self.players.draw(self.screen)
         self.item_types.draw(self.screen)

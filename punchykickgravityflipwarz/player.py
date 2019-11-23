@@ -23,9 +23,10 @@ class Player(Entity):
         self.controls = controls
         self.vel_x = 0
         self.vel_y = 0
+        self.acc_x = 0
         self.direction = 0
         self.game = game
-        self.item_type = Grenades(self.game.world)
+        self.item_type = Gun(self, self.game)
         self.game.item_types.add(self.item_type)
         self.item_type.rect = self.rect
 
@@ -71,7 +72,7 @@ class Player(Entity):
         if self.item_type is not None:
             self.item_type.update()
             if self.key_space:
-                item_finished, items = self.item_type.action(self)
+                item_finished, items = self.item_type.action()
                 if item_finished:
                     self.item_type = None
                 for item in items:
@@ -93,6 +94,9 @@ class Player(Entity):
             elif self.direction == 1:
                 super().set_sprite("stood_right")
 
+        self.vel_x += self.acc_x
+        self.acc_x = 0
+        
         self.rect.x += self.vel_x
  
         tile_hit_list = pygame.sprite.spritecollide(self, self.game.world.tiles, False)

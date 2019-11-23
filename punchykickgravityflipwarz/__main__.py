@@ -4,8 +4,8 @@ from punchykickgravityflipwarz.game import Game
 
 GAME_NAME = "Punchy-Kick Gravity-Flip Warz"
 
-SCREEN_WIDTH = 1920
-SCREEN_HEIGHT = 1000
+SCREEN_WIDTH = 1280
+SCREEN_HEIGHT = 1024
 FORMAT = '%(asctime)-15s  %(message)s'
 logging.basicConfig(level=logging.DEBUG, format=FORMAT)
 logger = logging.getLogger(__name__)

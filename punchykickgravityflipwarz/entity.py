@@ -15,8 +15,9 @@ class Entity(pygame.sprite.Sprite):
         self.animation_index = 0
         self.gravity = 0.35
 
-    def add_sprite(self, sprite_id, sheet, rectangle):
+    def add_sprite(self, sprite_id, sheet, rectangle,flip=False):
         sprite = sheet.image_at(rectangle)
+        if flip: sprite = pygame.transform.flip(sprite, True, False)
         sprite.set_colorkey((0, 0, 0))
         self.sprites[sprite_id] = [sprite]
 

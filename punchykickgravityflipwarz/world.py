@@ -5,6 +5,7 @@ from random import random
 from pygame import Surface
 import math
 
+from punchykickgravityflipwarz.game import SCREEN_WIDTH, SCREEN_HEIGHT
 import punchykickgravityflipwarz.colours
 from punchykickgravityflipwarz.sprite_sheet import SpriteSheet
 from punchykickgravityflipwarz.entity import Entity
@@ -19,27 +20,27 @@ imageFile = os.path.join("punchykickgravityflipwarz", "resources", "world.png")
 logger = logging.getLogger(__name__)
 
 TILE_SIZE = 16
-WIDTH = 1920
-HEIGHT = 1000
 
-SHAPE = (WIDTH,HEIGHT)
 SCALE = 10.0
 OCTAVES = 10
 PERSISTANCE = 0.35
 LACUNARITY = 2.0
 
+SCREEN_SIZE = (SCREEN_WIDTH, SCREEN_HEIGHT)
+
 tile_sprites = SpriteSheet(os.path.join('punchykickgravityflipwarz', 'resources', "block.jpg"))
 
 class World:
     
-    def __init__(self):
+    def __init__(self, game):
+        self.game = game
         self.tiles = pygame.sprite.Group()
         self.scale = 8
 
-        self.noisy_world = np.zeros(SHAPE)
-        self.noisy_world = self.generate_noise(SHAPE, SCALE, OCTAVES, PERSISTANCE, LACUNARITY)
-        for i in range(0, int(math.floor(SHAPE[0]/TILE_SIZE))):
-            for j in range(0, int(math.floor(SHAPE[1]/TILE_SIZE))):
+        self.noisy_world = np.zeros((SCREEN_WIDTH, SCREEN_HEIGHT))
+        self.noisy_world = self.generate_noise((SCREEN_WIDTH, SCREEN_HEIGHT), SCALE, OCTAVES, PERSISTANCE, LACUNARITY)
+        for i in range(0, int(math.floor(SCREEN_WIDTH/TILE_SIZE))):
+            for j in range(0, int(math.floor(SCREEN_HEIGHT/TILE_SIZE))):
                 threshold = 1/(0.3*math.pow(j,2) + 1) - 0.1
                 if (self.noisy_world[i][j] > threshold):
                     tile = Tile(i * TILE_SIZE, j * TILE_SIZE)
@@ -49,27 +50,9 @@ class World:
         self.redraw()
 
     def redraw(self):
-        self.surface = Surface((WIDTH, HEIGHT)).convert()
+        self.surface = Surface(SCREEN_SIZE).convert()
         self.surface.set_colorkey((0, 0, 0))
         self.tiles.draw(self.surface)
-
-    def get_world(self, screen):
-        img = Image.open(imageFile)
-        rgb_im = img.convert('RGB')
-
-        width = rgb_im.size[1]
-
-        for i in range (0,rgb_im.size[0]-1):
-            for j in range (0,rgb_im.size[1]-1):
-                if (rgb_im.getpixel((i,j)) == (0,0,0)):
-                    #index = self.get_index(i, j, width)
-                    #self.tiles[index] = 1
-                    #scale = 4
-                    pygame.draw.rect(screen, colours.BLACK, [i*self.scale, j*self.scale, self.scale, self.scale], 0)
-                else:
-                    #self.tiles[index] = 0
-                    pygame.draw.rect(screen, colours.WHITE, [i*self.scale, j*self.scale, self.scale, self.scale], 0)
-
 
     def update(self):
         needs_redraw = False
@@ -84,7 +67,6 @@ class World:
         if needs_redraw:
             self.redraw()
 
-
     def draw(self, screen):
         screen.blit(self.surface, (0, 0))
 
@@ -94,13 +76,13 @@ class World:
     def generate_noise(self, shape, scale, octaves, persistance, lacunarity):
         offset_x = randint(0,1000)
         offset_y = randint(0,1000)
-        for i in range (WIDTH):
-            for j in range (HEIGHT):
+        for i in range (SCREEN_WIDTH):
+            for j in range (SCREEN_HEIGHT):
                 self.noisy_world[i][j] = noise.pnoise2(i/scale + offset_x, j/scale + offset_y, octaves=octaves, 
                                     persistence=PERSISTANCE, 
                                     lacunarity=LACUNARITY, 
-                                    repeatx=WIDTH, 
-                                    repeaty=HEIGHT, 
+                                    repeatx=SCREEN_WIDTH, 
+                                    repeaty=SCREEN_HEIGHT, 
                                     base=0)
                 #print(self.noisy_world[i][j])
         return self.noisy_world

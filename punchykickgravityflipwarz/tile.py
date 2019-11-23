@@ -1,7 +1,7 @@
 import pygame
 import punchykickgravityflipwarz.colours as colours
 from punchykickgravityflipwarz.entity import Entity
-
+import punchykickgravityflipwarz.game
 from random import randint
 
 TILE_SIZE = 16
