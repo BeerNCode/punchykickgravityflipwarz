@@ -8,9 +8,8 @@ class Tile(Entity):
 
     def __init__(self, x, y):
         super().__init__(x, y, TILE_SIZE, TILE_SIZE)
-        
         self.image = pygame.Surface([TILE_SIZE, TILE_SIZE])
-        self.image.fill(colours.RED)
+        pygame.draw.rect(self.image, (255, 0, 0), (0, 0, TILE_SIZE, TILE_SIZE), 1)
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y

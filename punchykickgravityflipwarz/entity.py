@@ -20,8 +20,8 @@ class Entity(pygame.sprite.Sprite):
         self.sprites[sprite_id] = [sprite]
 
     def get_quadrance_to(self, other):
-        dx = self.rect.x - other.rect.x
-        dy = self.rect.y - other.rect.y
+        dx = self.rect.centerx - other.rect.centerx
+        dy = self.rect.centery - other.rect.centery
         return dx*dx + dy*dy
 
     def add_sprites(self, sprite_id, sheet, rectangle, amount, offset):

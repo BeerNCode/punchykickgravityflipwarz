@@ -106,7 +106,8 @@ class Grenade(Item):
         super().update()
         self.timer -= 1
         if self.timer <= 0:
-            explosion = Explosion(self.world, self.rect.x, self.rect.y)
+            offset = 8-96/2.0
+            explosion = Explosion(self.world, self.rect.x+offset, self.rect.y+offset)
             explosion.add_sprites("default", self.explosion_sheet, (0, 0, 96, 96), 6, (0, 96))
             explosion.set_sprite("default")
             explosion.update_animation()
@@ -115,7 +116,7 @@ class Grenade(Item):
 
 class Explosion(Item):
     def __init__(self, world, x, y):
-        super().__init__(world, x-44, y-44, 96, 96)
+        super().__init__(world, x, y, 96, 96)
         self.frame = 6
         self.fixed = True
 
