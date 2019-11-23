@@ -100,19 +100,25 @@ class Player(Entity):
             elif self.vel_x < 0:
                 self.rect.left = tile.rect.right
 
-        # up/down movement  
-        if self.vel_y == 0:
-            self.vel_y = 1
+        # up/down movement
+        
+        if self.gravity < 0:
+            sign = -1
         else:
-            self.vel_y += .35
+            sign = 1
+        
+        if self.vel_y == 0:
+            self.vel_y = 1 * sign
+        else:
+            self.vel_y += self.gravity
 
         if self.key_up:
-            self.rect.y += 2
+            self.rect.y += sign*2
             tile_hit_list = pygame.sprite.spritecollide(self, self.game.world.tiles, False)
-            self.rect.y -= 2
- 
+            self.rect.y -= sign*2
+                
             if len(tile_hit_list) > 0:
-                self.vel_y = -PLAYER_JUMP_SPEED
+                self.vel_y = -1 * sign * PLAYER_JUMP_SPEED
 
         self.rect.y += self.vel_y
 

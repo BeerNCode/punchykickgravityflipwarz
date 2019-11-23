@@ -133,8 +133,12 @@ class Explosion(Item):
                     tile.health -= 50
                     tile.hit = True;
                 elif quadrance < 400*400: 
+<<<<<<< HEAD
                     tile.health -= 25
                     tile.hit = True;
+=======
+                    tile.damage += 25
+>>>>>>> 8f1a3bbae5c2446ef6a7e72fd12b68744b160d2e
             return (True, [])
         else: 
             return (False, [])
