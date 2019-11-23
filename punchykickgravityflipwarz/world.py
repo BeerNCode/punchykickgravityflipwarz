@@ -1,21 +1,23 @@
+import pygame, os, logging, math
 from PIL import Image
-import pygame
-import colours, os
-import sprite_sheet, logging
-from pygame import Surface
-from entity import Entity
-from vector import Vector
 from random import randint
+from pygame import Surface
 
-imageFile = os.path.join("server", "resources", "world.png")
+import punchykickgravityflipwarz.colours
+from punchykickgravityflipwarz.sprite_sheet import SpriteSheet
+from punchykickgravityflipwarz.entity import Entity
+from punchykickgravityflipwarz.vector import Vector
+from punchykickgravityflipwarz.tile import Tile
+
+imageFile = os.path.join("punchykickgravityflipwarz", "resources", "world.png")
 
 logger = logging.getLogger(__name__)
 
-TILE_SIZE = 8
+TILE_SIZE = 16
 WIDTH = 1024
 HEIGHT = 768
 
-tile_sprites = sprite_sheet.spritesheet(os.path.join('server', 'resources', "block.jpg"))
+tile_sprites = SpriteSheet(os.path.join('punchykickgravityflipwarz', 'resources', "block.jpg"))
 
 class World:
     
@@ -23,20 +25,22 @@ class World:
         self.tiles = pygame.sprite.Group()
         self.scale = 8
 
-        num = randint(0,10)
-        for y in range(0, 50):
-            num = num + randint(-10,15)
-            num2 = randint(0,128)
-            num3 = randint(5,30)
-            for x in range(0,randint(5,20)):
-                for z in range(0,num3):
-                    tile = Tile((num + x) * TILE_SIZE, (128 - num2) * TILE_SIZE + z)
+        if True: # random world
+            for i in range(0, 50):
+                platform_x = randint(0, (WIDTH / TILE_SIZE))
+                platform_y = randint(0, HEIGHT / TILE_SIZE)
+                platform_width = randint(5,15)
+                for x in range(0, platform_width):
+                    tile = Tile((platform_x + x) * TILE_SIZE, platform_y * TILE_SIZE)
                     self.tiles.add(tile)
-
-        for x in range(0,WIDTH):
-            for y in range(0,10):    
-                tile = Tile(x, HEIGHT-y)
+        else:
+            for x in range(0,10):    
+                tile = Tile(x * TILE_SIZE, HEIGHT - 6 * TILE_SIZE)
                 self.tiles.add(tile)
+
+        for x in range(0, int(math.floor(WIDTH / TILE_SIZE))):
+            tile = Tile(x * TILE_SIZE, HEIGHT - 2 * TILE_SIZE)
+            self.tiles.add(tile)
 
         self.surface = Surface((WIDTH, HEIGHT))
         self.tiles.draw(self.surface)
@@ -58,19 +62,10 @@ class World:
                     #self.tiles[index] = 0
                     pygame.draw.rect(screen, colours.WHITE, [i*self.scale, j*self.scale, self.scale, self.scale], 0)
 
-    def show(self, screen):
+    def draw(self, screen):
         screen.blit(self.surface, (0, 0))
 
     def get_index(self, x, y, width):
         return y * width + x
 
-class Tile(Entity):
 
-    def __init__(self, x, y):
-        super().__init__()
-        
-        self.image = pygame.Surface([8, 8])
-        self.image.fill(colours.RED)
-        self.rect = self.image.get_rect()
-        self.rect.x = x
-        self.rect.y = y

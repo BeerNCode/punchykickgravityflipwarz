@@ -1,11 +1,10 @@
-import pygame
-import threading
-import logging
-import colours
-from controls import Controls
-from player import Player
-from world import World
+import pygame, threading, logging
 from random import randint
+
+import punchykickgravityflipwarz.colours
+from punchykickgravityflipwarz.controls import Controls
+from punchykickgravityflipwarz.player import Player
+from punchykickgravityflipwarz.world import World
 
 CONTROLS = [
     {"up": pygame.K_UP,"down": pygame.K_DOWN, "left": pygame.K_LEFT, "right": pygame.K_RIGHT, "space": pygame.K_SPACE},
@@ -27,24 +26,23 @@ class Game:
    
     def __init__(self, screen):
         self.screen = screen
-        self.players = []
+        self.players = pygame.sprite.Group()
         self.clock = pygame.time.Clock()
         self.start_ticks=pygame.time.get_ticks()
         self.running = True
         self.world = World()
 
-        self.players.append(Player("Bob", Controls(keys=CONTROLS[0]), "player.png"))
-        self.players.append(Player("Dave", Controls(keys=CONTROLS[1]), "player_2.png"))
+        self.players.add(Player("Bob", Controls(keys=CONTROLS[0]), "player.png", self.world))
+        self.players.add(Player("Dave", Controls(keys=CONTROLS[1]), "player_2.png", self.world))
 
     def run(self):
         while self.running:
             pygame.event.pump()
             self.update_events()
             
-            for player in self.players:
-                player.update(self.world)
+            self.players.update()
 
-            self.render(self.screen)
+            self.render()
             
             self.update_timer()
             pygame.display.flip()
@@ -62,17 +60,12 @@ class Game:
                 logger.info(f"Resizing the window to {SCREEN_WIDTH}x{SCREEN_HEIGHT}.")
                 self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.RESIZABLE)
 
-    def render(self, screen):
+    def render(self):
         self.screen.fill(screen_colour)
-        player_sprites = pygame.sprite.Group()
 
-        self.world.show(self.screen)
+        self.world.draw(self.screen)
        
-        for player in self.players:
-            player.show(self.screen)
-            player_sprites.add(player)
-
-        player_sprites.draw(self.screen)
+        self.players.draw(self.screen)
 
     def update_timer(self):
         seconds=(pygame.time.get_ticks()-self.start_ticks)/1000 

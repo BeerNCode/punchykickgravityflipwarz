@@ -1,6 +1,6 @@
 import pygame
 
-class spritesheet(object):
+class SpriteSheet(object):
     def __init__(self, filename):
         self.sheet = None
         self.filename = filename
@@ -8,6 +8,7 @@ class spritesheet(object):
     # Load a specific image from a specific rectangle
     def image_at(self, rectangle, colorkey = None):
         if self.sheet is None:
+            
             self.sheet = pygame.image.load(self.filename).convert()
         "Loads image from x,y,x+offset,y+offset"
         rect = pygame.Rect(rectangle)

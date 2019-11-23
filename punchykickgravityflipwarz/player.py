@@ -1,43 +1,38 @@
-import os
-import logging
-import json
-import threading
-import pygame
-import colours
-import random
-import sprite_sheet
-import math
-from entity import Entity
-from vector import Vector
+import os, logging, json, threading, pygame, random, math
+
+import punchykickgravityflipwarz.colours
+from punchykickgravityflipwarz.sprite_sheet import SpriteSheet
+from punchykickgravityflipwarz.entity import Entity
+from punchykickgravityflipwarz.vector import Vector
 
 logger = logging.getLogger(__name__)
 
 TILE_SIZE = 32
-PLAYER_JUMP = 10
+PLAYER_JUMP_SPEED = 10
 PLAYER_SPEED = 5
 PLAYER_RADIUS = 15
 PLAYER_DIAMETER = 2 * PLAYER_RADIUS
 
 class Player(Entity):
 
-    def __init__(self, name, controls, sprite_sheet_file_name):
-        super().__init__()
+    def __init__(self, name, controls, sprite_sheet_file_name, world):
+        super().__init__(0, 0, TILE_SIZE, TILE_SIZE)
         logger.debug(f"Creating player [{name}].")
         self.name = name
         self.controls = controls
         self.vel_x = 0
         self.vel_y = 0
         self.direction = 0
+        self.world = world
 
-        logger.debug(os.getcwd())
-
-        sheet = sprite_sheet.spritesheet(os.path.join('server', 'resources', sprite_sheet_file_name))
+        # Setup the sprites/animation.
+        sheet = SpriteSheet(os.path.join('punchykickgravityflipwarz', 'resources', sprite_sheet_file_name))
         super().add_sprite("stood_right", sheet, (0, 0, TILE_SIZE, TILE_SIZE))
         super().add_sprite("stood_left", sheet, (3*TILE_SIZE, TILE_SIZE, TILE_SIZE, TILE_SIZE))
         super().add_sprites("walking_right", sheet, (TILE_SIZE, 0, TILE_SIZE, TILE_SIZE), 3, (TILE_SIZE, 0))
         super().add_sprites("walking_left", sheet, (2*TILE_SIZE, TILE_SIZE, TILE_SIZE, TILE_SIZE), 3, (-TILE_SIZE, 0))
         super().set_sprite("stood_right")
-        super().show()
+        super().update_animation()
 
     def capture_inputs(self):
         keys = pygame.key.get_pressed()
@@ -65,63 +60,63 @@ class Player(Entity):
             self.key_right = keys[self.controls.keys["right"]]
             self.key_space = keys[self.controls.keys["space"]]
 
-    def update(self, world):
+    def update(self, ):
         self.capture_inputs()
 
-        # Left/right        
-        movingHorizontally = False
+        # Left/right movement       
         if self.key_left:
             self.vel_x = -PLAYER_SPEED
             super().set_sprite("walking_left")
             self.direction = 0
-            movingHorizontally = True
         elif self.key_right:
             super().set_sprite("walking_right")
             self.direction = 1
-            movingHorizontally = True
             self.vel_x = PLAYER_SPEED
         else:
             self.vel_x = 0
-
-        self.rect.x += self.vel_x
- 
-        block_hit_list = pygame.sprite.spritecollide(self, world.tiles, False)
-        for block in block_hit_list:
-            if self.vel_x > 0:
-                self.rect.right = block.rect.left
-            elif self.vel_x < 0:
-                self.rect.left = block.rect.right
-
-        if not movingHorizontally:
             if self.direction == 0:
                 super().set_sprite("stood_left")
             elif self.direction == 1:
                 super().set_sprite("stood_right")
 
-        # jump
+        self.rect.x += self.vel_x
+ 
+        tile_hit_list = pygame.sprite.spritecollide(self, self.world.tiles, False)
+        for tile in tile_hit_list:
+            if self.vel_x > 0:
+                self.rect.right = tile.rect.left
+            elif self.vel_x < 0:
+                self.rect.left = tile.rect.right
+
+        # up/down movement  
+        self.calculate_gravity()
+
         if self.key_up:
             self.rect.y += 2
-            tile_hit_list = pygame.sprite.spritecollide(self, world.tiles, False)
+            tile_hit_list = pygame.sprite.spritecollide(self, self.world.tiles, False)
             self.rect.y -= 2
  
             if len(tile_hit_list) > 0:
-                self.vel_y = -PLAYER_JUMP
+                self.vel_y = -PLAYER_JUMP_SPEED
 
-        # gravity        
+        self.rect.y += self.vel_y
+
+        tile_hit_list = pygame.sprite.spritecollide(self, self.world.tiles, False)
+        for tile in tile_hit_list:
+            if self.vel_y > 0:
+                self.rect.bottom = tile.rect.top
+            elif self.vel_y < 0:
+                self.rect.top = tile.rect.bottom
+            self.vel_y = 0
+
+        super().update_animation()
+
+    def calculate_gravity(self):
         if self.vel_y == 0:
             self.vel_y = 1
         else:
             self.vel_y += .35
- 
-        self.rect.y += self.vel_y
 
-        block_hit_list = pygame.sprite.spritecollide(self, world.tiles, False)
-        for block in block_hit_list:
-            if self.vel_y > 0:
-                self.rect.bottom = block.rect.top
-            elif self.vel_y < 0:
-                self.rect.top = block.rect.bottom
-            self.vel_y = 0
 
     def show(self, screen):
         super().show()

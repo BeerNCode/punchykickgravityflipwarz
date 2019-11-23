@@ -1,13 +1,14 @@
 import pygame
 import logging
 from pygame import Rect
+
 logger = logging.getLogger(__name__)
 
 class Entity(pygame.sprite.Sprite):
 
-    def __init__(self):
+    def __init__(self, x, y, w, h):
         super().__init__()
-        self.rect = Rect(0, 0, 32, 32)
+        self.rect = Rect(x, y, w, h)
         self.sprites = {}
         self.sprite_index = 0
         self.animation_delay = 2
@@ -31,7 +32,7 @@ class Entity(pygame.sprite.Sprite):
     def set_sprite(self, sprite_id):
         self.images = self.sprites[sprite_id]
 
-    def show(self):
+    def update_animation(self):
         try:
             self.animation_index += 1
             if self.animation_index >= self.animation_delay:
