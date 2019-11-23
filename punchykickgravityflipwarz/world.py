@@ -76,7 +76,8 @@ class World:
         needs_redraw = False
         for tile in self.tiles:
             if tile.hit:
-                tile.image.fill((255,0,0))
+                health_colour = max(min(int(tile.health),255),0)
+                tile.image.fill((255,health_colour,health_colour))
                 needs_redraw = True 
                 if tile.health <= 0:
                     self.tiles.remove(tile)
