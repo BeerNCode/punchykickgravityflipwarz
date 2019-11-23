@@ -20,9 +20,12 @@ class World:
         self.tiles = pygame.sprite.Group()
         self.scale = 8
 
-        for x in range(0, 200):
-            tile = Tile(randint(0,128) * TILE_SIZE, randint(0,128)*TILE_SIZE)
-            self.tiles.add(tile)
+        for x in range(0, 20):
+            num = randint(0,128)
+            num2 = randint(0,128)
+            for y in range(0,randint(0,20)):
+                tile = Tile((num + y) * TILE_SIZE, num2 * TILE_SIZE)
+                self.tiles.add(tile)
 
     def get_world(self, screen):
         img = Image.open(imageFile)
