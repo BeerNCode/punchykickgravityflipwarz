@@ -26,6 +26,8 @@ class Player(Entity):
         self.direction = 0
         self.game = game
         self.item_type = Grenades(self.game.world)
+        self.game.item_types.add(self.item_type)
+        self.item_type.rect = self.rect
 
         # Setup the sprites/animation.
         sheet = SpriteSheet(os.path.join('punchykickgravityflipwarz', 'resources', sprite_sheet_file_name))

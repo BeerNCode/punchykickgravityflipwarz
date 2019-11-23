@@ -32,11 +32,11 @@ class Game:
         self.screen = screen
         self.players = pygame.sprite.Group()
         self.items = pygame.sprite.Group()
+        self.item_types = pygame.sprite.Group()
         self.clock = pygame.time.Clock()
         self.start_ticks=pygame.time.get_ticks()
         self.running = True
         self.world = World()
-        self.item_types = []
         
         self.gravity_timer = 300
 
@@ -85,6 +85,7 @@ class Game:
         self.screen.fill(screen_colour)
         self.world.draw(self.screen)
         self.players.draw(self.screen)
+        self.item_types.draw(self.screen)
         self.items.draw(self.screen)
 
     def gravity(self):

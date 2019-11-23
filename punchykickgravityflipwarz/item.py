@@ -4,8 +4,9 @@ from punchykickgravityflipwarz.entity import Entity
 
 logger = logging.getLogger(__name__)
 
-class ItemType: # A pickupable item in the world 
+class ItemType(Entity): # A pickupable item in the world 
     def __init__(self, world):
+        super().__init__(0, 0, 32, 32)
         self.name = "Unknown"
         self.item_size = 16
         self.world = world
@@ -22,6 +23,9 @@ class Grenades(ItemType):
         self.explosion_sheet = SpriteSheet(os.path.join('punchykickgravityflipwarz', 'resources', "explosion.png"))
         self.max_time_out = 10
         self.time_out = 0
+        self.add_sprite("default", self.grenades_sheet, (0, 0, self.item_size, self.item_size))
+        self.set_sprite("default")
+        self.update_animation()
 
     def action(self, player):
         if self.time_out != 0:
