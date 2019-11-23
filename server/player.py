@@ -25,8 +25,8 @@ class Player(Entity):
         logger.debug(f"Creating player [{name}].")
         self.name = name
         self.controls = controls
-        self.pos = Vector(0, 0)
-        self.vel = Vector(0, 0)
+        self.vel_x = 0
+        self.vel_y = 0
         self.direction = 0
 
         logger.debug(os.getcwd())
@@ -67,53 +67,66 @@ class Player(Entity):
 
     def update(self, world):
         self.capture_inputs()
-        
-        speed = PLAYER_SPEED
 
-        # jump
-        self.pos.y += 2
-        tile_hit_list = pygame.sprite.spritecollide(self, world.tiles, False)
-        self.pos.y -= 2
- 
-        if len(tile_hit_list) > 0:
-            self.vel.y = 0
-            self.pos.y = 200
-            if self.key_up:
-                self.vel.y = -PLAYER_JUMP
-        else:
-            self.vel.y += 9.81 * 0.05
-        self.pos.y += self.vel.y
-
-        tile_hit_list = pygame.sprite.spritecollide(self, world.tiles, False)
-        for tile in tile_hit_list:
-            if self.vel.y > 0:
-                self.rect.bottom = tile.rect.top
-            elif self.vel.y < 0:
-                self.rect.top = tile.rect.bottom
-                
-        dx = 0
+        # Left/right        
         movingHorizontally = False
         if self.key_left:
-            dx = -speed
+            self.vel_x = -PLAYER_SPEED
             super().set_sprite("walking_left")
             self.direction = 0
             movingHorizontally = True
         elif self.key_right:
-            dx = speed
             super().set_sprite("walking_right")
             self.direction = 1
             movingHorizontally = True
-        self.pos.x += dx
+            self.vel_x = PLAYER_SPEED
+        else:
+            self.vel_x = 0
+
+        self.rect.x += self.vel_x
+ 
+        block_hit_list = pygame.sprite.spritecollide(self, world.tiles, False)
+        for block in block_hit_list:
+            if self.vel_x > 0:
+                self.rect.right = block.rect.left
+            elif self.vel_x < 0:
+                self.rect.left = block.rect.right
 
         tile_hit_list = pygame.sprite.spritecollide(self, world.tiles, False)
         if len(tile_hit_list) > 0:
-            self.pos.x -= self.vel.x
+            logger.debug("hit")
+            self.rect.x -= self.vel_x
 
         if not movingHorizontally:
             if self.direction == 0:
                 super().set_sprite("stood_left")
             elif self.direction == 1:
                 super().set_sprite("stood_right")
-        
+
+        # jump
+        if self.key_up:
+            self.rect.y += 2
+            tile_hit_list = pygame.sprite.spritecollide(self, world.tiles, False)
+            self.rect.y -= 2
+ 
+            if len(tile_hit_list) > 0:
+                self.vel_y = -PLAYER_JUMP
+
+        # gravity        
+        if self.vel_y == 0:
+            self.vel_y = 1
+        else:
+            self.vel_y += .35
+ 
+        self.rect.y += self.vel_y
+
+        block_hit_list = pygame.sprite.spritecollide(self, world.tiles, False)
+        for block in block_hit_list:
+            if self.vel_y > 0:
+                self.rect.bottom = block.rect.top
+            elif self.vel_y < 0:
+                self.rect.top = block.rect.bottom
+            self.vel_y = 0
+
     def show(self, screen):
         super().show()

@@ -22,6 +22,7 @@ class World:
         self.tiles = pygame.sprite.Group()
         self.scale = 8
 
+<<<<<<< HEAD
         num = randint(0,10)
         for y in range(0, 50):
             num = num + randint(-10,15)
@@ -36,6 +37,11 @@ class World:
             for y in range(0,10):    
                 tile = Tile(x, HEIGHT-y)
                 self.tiles.add(tile)
+=======
+        for x in range(0, 200):
+            tile = Tile(x * TILE_SIZE, 300)
+            self.tiles.add(tile)
+>>>>>>> ba116fc6cc5348ea55b7ab632069056e93253efa
 
     def get_world(self, screen):
         img = Image.open(imageFile)
@@ -58,14 +64,15 @@ class World:
         self.tiles.draw(screen)
 
     def get_index(self, x, y, width):
-        return y * width + x    
+        return y * width + x
 
 class Tile(Entity):
 
     def __init__(self, x, y):
         super().__init__()
-        self.pos = Vector(x, y)
         
-        super().add_sprite("default", tile_sprites, (0, 0, TILE_SIZE, TILE_SIZE))
-        super().set_sprite("default")
-        super().show()
+        self.image = pygame.Surface([8, 8])
+        self.image.fill(colours.RED)
+        self.rect = self.image.get_rect()
+        self.rect.x = x
+        self.rect.y = y
