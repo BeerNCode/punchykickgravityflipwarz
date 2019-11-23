@@ -5,6 +5,19 @@ You're all fighting for some reason on a giant rock thing and then out of nowher
 
 It's in python.
 
-## Todo
+## Features
 
-- The game.
+- Items e.g. weapons, guns, bombs etc.
+- Desctructable terrain
+- Proc gen terrain
+    - slighly bigger
+    - more interesting shapes
+- Sprites for tiles
+- Different types of tiles
+- game mechanics for falling off world
+    - need to respawn
+    - need a scoring system
+    - lobby for queued players (network/gamepad)
+
+## Bugs
+- Sprite for player 1 is bust.
