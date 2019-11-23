@@ -5,6 +5,7 @@ import colours
 from controls import Controls
 from player import Player
 from world import World
+from random import randint
 
 CONTROLS = [
     {"up": pygame.K_UP,"down": pygame.K_DOWN, "left": pygame.K_LEFT, "right": pygame.K_RIGHT, "space": pygame.K_SPACE},
@@ -17,6 +18,8 @@ GAME_SPEED = 60
 CLIENT_TIMEOUT = 1000
 SCREEN_WIDTH = 1024
 SCREEN_HEIGHT = 768
+
+screen_colour = (randint(0,255),randint(0,255),randint(0,255))
 
 logger = logging.getLogger(__name__)
 
@@ -60,7 +63,7 @@ class Game:
                 self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.RESIZABLE)
 
     def render(self, screen):
-        self.screen.fill(colours.LIGHT_GREY)
+        self.screen.fill(screen_colour)
         player_sprites = pygame.sprite.Group()
 
         self.world.show(self.screen)
