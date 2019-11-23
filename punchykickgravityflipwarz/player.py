@@ -104,7 +104,7 @@ class Player(Entity):
         if self.vel_y == 0:
             self.vel_y = 1
         else:
-            self.vel_y += .35
+            self.vel_y += self.gravity
 
         if self.key_up:
             self.rect.y += 2

@@ -13,6 +13,7 @@ class Entity(pygame.sprite.Sprite):
         self.sprite_index = 0
         self.animation_delay = 2
         self.animation_index = 0
+        self.gravity = 0.35
 
     def add_sprite(self, sprite_id, sheet, rectangle):
         sprite = sheet.image_at(rectangle)

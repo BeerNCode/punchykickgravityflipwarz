@@ -33,6 +33,8 @@ class Game:
         self.running = True
         self.world = World()
         self.item_types = []
+        
+        self.gravity_timer = 0
 
         self.players.add(Player("Bob", Controls(keys=CONTROLS[0]), "player.png", self))
         self.players.add(Player("Dave", Controls(keys=CONTROLS[1]), "player_2.png", self))
@@ -43,6 +45,8 @@ class Game:
             self.update_events()
             
             self.players.update()
+            
+            self.gravity()
             
             # Sort out item logic
             all_new_items = []
@@ -78,6 +82,14 @@ class Game:
         self.players.draw(self.screen)
         self.items.draw(self.screen)
 
+    def gravity(self):
+        self.gravity_timer += 1
+        if self.gravity_timer == 100:
+            self.gravity_timer = 0
+            g = float(randint(10,100))/100
+            for p in self.players:
+                p.gravity = g
+        
     def update_timer(self):
         seconds=(pygame.time.get_ticks()-self.start_ticks)/1000 
         if seconds>10000: 
