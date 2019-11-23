@@ -101,8 +101,7 @@ class Player(Entity):
                 self.rect.left = tile.rect.right
 
         # up/down movement
-        
-        if self.gravity < 0:
+        if self.game.world.gravity < 0:
             sign = -1
         else:
             sign = 1
@@ -110,7 +109,7 @@ class Player(Entity):
         if self.vel_y == 0:
             self.vel_y = 1 * sign
         else:
-            self.vel_y += self.gravity
+            self.vel_y += self.game.world.gravity
 
         if self.key_up:
             self.rect.y += sign*2

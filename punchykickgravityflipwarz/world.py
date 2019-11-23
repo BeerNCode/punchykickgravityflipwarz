@@ -35,6 +35,7 @@ class World:
     def __init__(self):
         self.tiles = pygame.sprite.Group()
         self.scale = 8
+        self.gravity = 0.35
 
         self.noisy_world = np.zeros(SHAPE)
         self.noisy_world = self.generate_noise(SHAPE, SCALE, OCTAVES, PERSISTANCE, LACUNARITY)

@@ -88,8 +88,7 @@ class Game:
         if self.gravity_timer == 0:
             self.gravity_timer = randint(10,200)
             g = float(randint(-100,100))/100
-            for p in self.players:
-                p.gravity = g
+            self.world.gravity = g
         
     def update_timer(self):
         seconds=(pygame.time.get_ticks()-self.start_ticks)/1000 
