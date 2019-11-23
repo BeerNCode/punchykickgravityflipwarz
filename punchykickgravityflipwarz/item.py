@@ -127,11 +127,14 @@ class Explosion(Item):
             for tile in self.world.tiles:
                 quadrance = self.get_quadrance_to(tile)
                 if quadrance < 100*100:
-                    tile.damage += 100
+                    tile.health -= 100
+                    tile.hit = True;
                 elif quadrance < 200*200: 
-                    tile.damage += 50
+                    tile.health -= 50
+                    tile.hit = True;
                 elif quadrance < 400*400: 
-                    tile.damage += 25
+                    tile.health -= 25
+                    tile.hit = True;
             return (True, [])
         else: 
             return (False, [])

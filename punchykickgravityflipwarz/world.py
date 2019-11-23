@@ -3,6 +3,7 @@ from PIL import Image
 from random import randint
 from random import random
 from pygame import Surface
+import math
 
 import punchykickgravityflipwarz.colours
 from punchykickgravityflipwarz.sprite_sheet import SpriteSheet
@@ -74,7 +75,7 @@ class World:
         needs_redraw = False
         for tile in self.tiles:
             if tile.hit:
-                tile.image.fill((255,tile.health,tile.health))
+                tile.image.fill((255,0,0))
                 needs_redraw = True 
                 if tile.health <= 0:
                     self.tiles.remove(tile)
