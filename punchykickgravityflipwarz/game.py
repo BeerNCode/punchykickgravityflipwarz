@@ -54,6 +54,7 @@ class Game:
             for item in all_new_items: self.items.add(item)
             for item in finished_items: self.items.remove(item)
 
+            self.world.update()
             self.draw()
             
             self.update_timer()

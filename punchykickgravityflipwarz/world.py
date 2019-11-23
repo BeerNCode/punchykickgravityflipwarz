@@ -46,6 +46,9 @@ class World:
                     tile.tile_type(self.noisy_world[i][j])
                     self.tiles.add(tile)
 
+        self.redraw()
+
+    def redraw(self):
         self.surface = Surface((WIDTH, HEIGHT)).convert()
         self.surface.set_colorkey((0, 0, 0))
         self.tiles.draw(self.surface)
@@ -66,6 +69,18 @@ class World:
                 else:
                     #self.tiles[index] = 0
                     pygame.draw.rect(screen, colours.WHITE, [i*self.scale, j*self.scale, self.scale, self.scale], 0)
+
+
+    def update(self):
+        needs_redraw = False
+        for tile in self.tiles:
+            if tile.damage >= 100:
+                needs_redraw = True
+                self.tiles.remove(tile)
+
+        if needs_redraw:
+            self.redraw()
+
 
     def draw(self, screen):
         screen.blit(self.surface, (0, 0))

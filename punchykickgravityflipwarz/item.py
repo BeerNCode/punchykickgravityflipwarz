@@ -123,5 +123,10 @@ class Explosion(Item):
     def update(self):
         super().update()
         self.frame -= 1
-        if self.frame <= 0: return (True, [])
+        if self.frame <= 0: 
+            tile_hit_list = pygame.sprite.spritecollide(self, self.world.tiles, False)
+            for tile in tile_hit_list:
+                tile.damage += 100
+
+            return (True, [])
         else: return (False, [])

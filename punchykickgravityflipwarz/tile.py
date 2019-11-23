@@ -14,6 +14,7 @@ class Tile(Entity):
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
+        self.damage = 0
 
     def tile_type(self, tile_value):
         if tile_value < 0.03:
