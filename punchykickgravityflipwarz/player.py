@@ -28,7 +28,7 @@ class Player(Entity):
         self.item_type = Grenades(self.game.world)
 
         # Setup the sprites/animation.
-        sheet = SpriteSheet(os.path.join('punchykickgravityflipwarz', 'resources', sprite_sheet_file_name), colour_key=(163, 73, 164))
+        sheet = SpriteSheet(os.path.join('punchykickgravityflipwarz', 'resources', sprite_sheet_file_name))
         super().add_sprite("stood_right", sheet, (0, 0, TILE_SIZE, TILE_SIZE))
         super().add_sprite("stood_left", sheet, (3*TILE_SIZE, TILE_SIZE, TILE_SIZE, TILE_SIZE))
         super().add_sprites("walking_right", sheet, (TILE_SIZE, 0, TILE_SIZE, TILE_SIZE), 3, (TILE_SIZE, 0))

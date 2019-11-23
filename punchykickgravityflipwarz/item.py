@@ -19,7 +19,7 @@ class Grenades(ItemType):
         self.name = "Grenades"
         self.item_size = 16
         self.grenades_sheet = SpriteSheet(os.path.join('punchykickgravityflipwarz', 'resources', "grenade.png"))
-        self.explosion_sheet = SpriteSheet(os.path.join('punchykickgravityflipwarz', 'resources', "explosion.png"), colour_key=(163, 73, 164))
+        self.explosion_sheet = SpriteSheet(os.path.join('punchykickgravityflipwarz', 'resources', "explosion.png"))
         self.max_time_out = 10
         self.time_out = 0
 
@@ -123,5 +123,10 @@ class Explosion(Item):
     def update(self):
         super().update()
         self.frame -= 1
-        if self.frame <= 0: return (True, [])
+        if self.frame <= 0: 
+            tile_hit_list = pygame.sprite.spritecollide(self, self.world.tiles, False)
+            for tile in tile_hit_list:
+                tile.damage += 100
+
+            return (True, [])
         else: return (False, [])

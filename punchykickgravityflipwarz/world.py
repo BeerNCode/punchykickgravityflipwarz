@@ -1,6 +1,7 @@
 import pygame, os, logging, math
 from PIL import Image
 from random import randint
+from random import random
 from pygame import Surface
 
 import punchykickgravityflipwarz.colours
@@ -17,13 +18,13 @@ imageFile = os.path.join("punchykickgravityflipwarz", "resources", "world.png")
 logger = logging.getLogger(__name__)
 
 TILE_SIZE = 16
-WIDTH = 1024
-HEIGHT = 768
+WIDTH = 1920
+HEIGHT = 1000
 
 SHAPE = (WIDTH,HEIGHT)
 SCALE = 10.0
-OCTAVES = 6
-PERSISTANCE = 0.5
+OCTAVES = 10
+PERSISTANCE = 0.35
 LACUNARITY = 2.0
 
 tile_sprites = SpriteSheet(os.path.join('punchykickgravityflipwarz', 'resources', "block.jpg"))
@@ -35,34 +36,21 @@ class World:
         self.scale = 8
         self.noisy_world = np.zeros(SHAPE)
 
-        if False: # random world
-            for i in range(0, 50):
-                platform_x = randint(0, (WIDTH / TILE_SIZE))
-                platform_y = randint(0, HEIGHT / TILE_SIZE)
-                platform_width = randint(5,15)
-                for x in range(0, platform_width):
-                    tile = Tile((platform_x + x) * TILE_SIZE, platform_y * TILE_SIZE)
-                    self.tiles.add(tile)
-        elif False:
-            for x in range(0,10):    
-                tile = Tile(x * TILE_SIZE, HEIGHT - 6 * TILE_SIZE)
-                self.tiles.add(tile)
-
-        for x in range(0, int(math.floor(WIDTH / TILE_SIZE))):
-            tile = Tile(x * TILE_SIZE, HEIGHT - 2 * TILE_SIZE)
-            self.tiles.add(tile)
-
         self.noisy_world = self.generate_noise(SHAPE, SCALE, OCTAVES, PERSISTANCE, LACUNARITY)
 
         for i in range(0, int(math.floor(SHAPE[0]/TILE_SIZE))):
             for j in range(0, int(math.floor(SHAPE[1]/TILE_SIZE))):
-                if (self.noisy_world[i][j] > 0.1):
+                threshold = 1/(0.3*math.pow(j,2) + 1) - 0.1
+                if (self.noisy_world[i][j] > threshold):
                     tile = Tile(i * TILE_SIZE, j * TILE_SIZE)
+                    tile.tile_type(self.noisy_world[i][j])
                     self.tiles.add(tile)
-        print(len(self.tiles))
 
-        self.surface = Surface((WIDTH, HEIGHT))
-        self.surface.convert()
+        self.redraw()
+
+    def redraw(self):
+        self.surface = Surface((WIDTH, HEIGHT)).convert()
+        self.surface.set_colorkey((0, 0, 0))
         self.tiles.draw(self.surface)
 
     def get_world(self, screen):
@@ -82,6 +70,18 @@ class World:
                     #self.tiles[index] = 0
                     pygame.draw.rect(screen, colours.WHITE, [i*self.scale, j*self.scale, self.scale, self.scale], 0)
 
+
+    def update(self):
+        needs_redraw = False
+        for tile in self.tiles:
+            if tile.damage >= 100:
+                needs_redraw = True
+                self.tiles.remove(tile)
+
+        if needs_redraw:
+            self.redraw()
+
+
     def draw(self, screen):
         screen.blit(self.surface, (0, 0))
 
@@ -89,9 +89,11 @@ class World:
         return y * width + x
 
     def generate_noise(self, shape, scale, octaves, persistance, lacunarity):
+        offset_x = randint(0,1000)
+        offset_y = randint(0,1000)
         for i in range (WIDTH):
             for j in range (HEIGHT):
-                self.noisy_world[i][j] = noise.pnoise2(i/scale, j/scale, octaves=octaves, 
+                self.noisy_world[i][j] = noise.pnoise2(i/scale + offset_x, j/scale + offset_y, octaves=octaves, 
                                     persistence=PERSISTANCE, 
                                     lacunarity=LACUNARITY, 
                                     repeatx=WIDTH, 
