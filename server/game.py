@@ -39,7 +39,7 @@ class Game:
             self.update_events()
             
             for player in self.players:
-                player.update()
+                player.update(self.world)
 
             self.render(self.screen)
             
@@ -60,10 +60,10 @@ class Game:
                 self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.RESIZABLE)
 
     def render(self, screen):
-        #self.screen.fill(colours.LIGHT_GREY)
+        self.screen.fill(colours.LIGHT_GREY)
         player_sprites = pygame.sprite.Group()
 
-        self.world.get_world(self.screen)
+        self.world.show(self.screen)
        
         for player in self.players:
             player.show(self.screen)

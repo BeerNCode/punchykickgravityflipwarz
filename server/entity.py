@@ -7,6 +7,7 @@ class Entity(pygame.sprite.Sprite):
 
     def __init__(self):
         super().__init__()
+        self.pos = (0, 0)
         self.sprites = {}
         self.sprite_index = 0
         self.animation_delay = 2
@@ -44,6 +45,7 @@ class Entity(pygame.sprite.Sprite):
             self.rect = self.image.get_rect()
             self.rect.x = (self.pos.x-self.rect.width/2)
             self.rect.y = (self.pos.y-self.rect.height/2)
+
         except Exception as e:
             logger.error("Something went wrong displaying the sprite.")
             logger.debug(f"[{self.sprite_index}] but got [{len(self.images)}]")

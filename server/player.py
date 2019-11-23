@@ -36,6 +36,8 @@ class Player(Entity):
         super().add_sprite("stood_left", sheet, (3*TILE_SIZE, TILE_SIZE, TILE_SIZE, TILE_SIZE))
         super().add_sprites("walking_right", sheet, (TILE_SIZE, 0, TILE_SIZE, TILE_SIZE), 3, (TILE_SIZE, 0))
         super().add_sprites("walking_left", sheet, (2*TILE_SIZE, TILE_SIZE, TILE_SIZE, TILE_SIZE), 3, (-TILE_SIZE, 0))
+        super().set_sprite("stood_right")
+        super().show()
 
     def capture_inputs(self):
         keys = pygame.key.get_pressed()
@@ -63,23 +65,32 @@ class Player(Entity):
             self.key_right = keys[self.controls.keys["right"]]
             self.key_space = keys[self.controls.keys["space"]]
 
-    def update(self):
+    def update(self, world):
         self.capture_inputs()
         
         speed = PLAYER_SPEED
 
-        ground_level = 200
-
-        if self.pos.y >= ground_level:
+        # jump
+        self.pos.y += 2
+        tile_hit_list = pygame.sprite.spritecollide(self, world.tiles, False)
+        self.pos.y -= 2
+ 
+        if len(tile_hit_list) > 0:
             self.vel.y = 0
             self.pos.y = 200
             if self.key_up:
                 self.vel.y = -PLAYER_JUMP
         else:
             self.vel.y += 9.81 * 0.05
-        
         self.pos.y += self.vel.y
 
+        tile_hit_list = pygame.sprite.spritecollide(self, world.tiles, False)
+        for tile in tile_hit_list:
+            if self.vel.y > 0:
+                self.rect.bottom = tile.rect.top
+            elif self.vel.y < 0:
+                self.rect.top = tile.rect.bottom
+                
         dx = 0
         movingHorizontally = False
         if self.key_left:
@@ -92,8 +103,11 @@ class Player(Entity):
             super().set_sprite("walking_right")
             self.direction = 1
             movingHorizontally = True
-
         self.pos.x += dx
+
+        tile_hit_list = pygame.sprite.spritecollide(self, world.tiles, False)
+        if len(tile_hit_list) > 0:
+            self.pos.x -= self.vel.x
 
         if not movingHorizontally:
             if self.direction == 0:
