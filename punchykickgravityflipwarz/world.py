@@ -74,9 +74,11 @@ class World:
     def update(self):
         needs_redraw = False
         for tile in self.tiles:
-            if tile.damage >= 100:
-                needs_redraw = True
-                self.tiles.remove(tile)
+            if tile.hit:
+                tile.image.fill((255,tile.health,tile.health))
+                needs_redraw = True 
+                if tile.health <= 0:
+                    self.tiles.remove(tile)
 
         if needs_redraw:
             self.redraw()
