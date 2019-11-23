@@ -20,6 +20,11 @@ class Entity(pygame.sprite.Sprite):
         sprite.set_colorkey((0, 0, 0))
         self.sprites[sprite_id] = [sprite]
 
+    def get_quadrance_to(self, other):
+        dx = self.rect.centerx - other.rect.centerx
+        dy = self.rect.centery - other.rect.centery
+        return dx*dx + dy*dy
+
     def add_sprites(self, sprite_id, sheet, rectangle, amount, offset):
         sprites = []
         for i in range(amount):

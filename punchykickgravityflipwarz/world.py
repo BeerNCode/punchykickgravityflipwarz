@@ -34,10 +34,9 @@ class World:
     def __init__(self):
         self.tiles = pygame.sprite.Group()
         self.scale = 8
+
         self.noisy_world = np.zeros(SHAPE)
-
         self.noisy_world = self.generate_noise(SHAPE, SCALE, OCTAVES, PERSISTANCE, LACUNARITY)
-
         for i in range(0, int(math.floor(SHAPE[0]/TILE_SIZE))):
             for j in range(0, int(math.floor(SHAPE[1]/TILE_SIZE))):
                 threshold = 1/(0.3*math.pow(j,2) + 1) - 0.1
@@ -74,9 +73,11 @@ class World:
     def update(self):
         needs_redraw = False
         for tile in self.tiles:
-            if tile.damage >= 100:
-                needs_redraw = True
-                self.tiles.remove(tile)
+            if tile.hit:
+                tile.image.fill((255,tile.health,tile.health))
+                needs_redraw = True 
+                if tile.health <= 0:
+                    self.tiles.remove(tile)
 
         if needs_redraw:
             self.redraw()

@@ -106,7 +106,8 @@ class Grenade(Item):
         super().update()
         self.timer -= 1
         if self.timer <= 0:
-            explosion = Explosion(self.world, self.rect.x, self.rect.y)
+            offset = 8-96/2.0
+            explosion = Explosion(self.world, self.rect.x+offset, self.rect.y+offset)
             explosion.add_sprites("default", self.explosion_sheet, (0, 0, 96, 96), 6, (0, 96))
             explosion.set_sprite("default")
             explosion.update_animation()
@@ -115,18 +116,30 @@ class Grenade(Item):
 
 class Explosion(Item):
     def __init__(self, world, x, y):
-        super().__init__(world, x-44, y-44, 96, 96)
-        self.timer = 100
-        self.frame = 36
+        super().__init__(world, x, y, 96, 96)
+        self.frame = 6
         self.fixed = True
 
     def update(self):
         super().update()
         self.frame -= 1
         if self.frame <= 0: 
+<<<<<<< HEAD
             tile_hit_list = pygame.sprite.spritecollide(self, self.world.tiles, False)
             for tile in tile_hit_list:
-                tile.damage += 100
-
+                tile.health -= 100
+                tile.hit = True
+=======
+            for tile in self.world.tiles:
+                quadrance = self.get_quadrance_to(tile)
+                if quadrance < 100*100:
+                    tile.damage += 100
+                elif quadrance < 200*200: 
+                    tile.damage += 50
+                elif quadrance < 400*400: 
+                    tile.damage += 25
+>>>>>>> 4031118a03b9e436ba0c76f5c0e21d5ba55ecba8
             return (True, [])
-        else: return (False, [])
+        else: 
+            return (False, [])
+            
