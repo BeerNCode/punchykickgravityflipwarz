@@ -30,6 +30,8 @@ SCREEN_SIZE = (SCREEN_WIDTH, SCREEN_HEIGHT)
 
 tile_sprites = SpriteSheet(os.path.join('punchykickgravityflipwarz', 'resources', "block.jpg"))
 
+SCORE = [0,0]
+
 class World:
     
     def __init__(self, game):
@@ -111,6 +113,16 @@ class World:
 
     def draw(self, screen):
         screen.blit(self.surface, (0, 0))
+        font = pygame.font.Font('freesansbold.ttf', 32)
+        text = font.render(f"Player 1 : {SCORE[0]}", True, (255, 0, 0), (0,255,0))
+        textRect = text.get_rect()
+        textRect.center = (200, 25)
+        screen.blit(text, textRect)
+
+        text = font.render(f"Player 2 : {SCORE[1]}", True, (255, 0, 0), (0,255,0))
+        textRect = text.get_rect()
+        textRect.center = (1520, 25)
+        screen.blit(text, textRect)  
 
     def get_index(self, x, y, width):
         return y * width + x

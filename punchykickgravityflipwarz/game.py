@@ -10,6 +10,7 @@ from punchykickgravityflipwarz.item import *
 from punchykickgravityflipwarz.controls import Controls
 from punchykickgravityflipwarz.player import Player
 from punchykickgravityflipwarz.world import World
+import punchykickgravityflipwarz.colours as colours
 
 CONTROLS = [
     {"up": pygame.K_UP,"down": pygame.K_DOWN, "left": pygame.K_LEFT, "right": pygame.K_RIGHT, "space": pygame.K_SPACE},
@@ -49,10 +50,9 @@ class Game:
         while self.running:
             pygame.event.pump()
             self.update_events()
-            
             self.players.update()
-            
-            #self.gravity()
+
+            self.gravity()
             
             # Sort out item logic
             all_new_items = []
@@ -102,3 +102,5 @@ class Game:
         seconds=(pygame.time.get_ticks()-self.start_ticks)/1000 
         if seconds>10000: 
             self.running = False
+
+    

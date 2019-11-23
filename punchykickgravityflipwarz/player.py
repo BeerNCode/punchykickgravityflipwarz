@@ -1,4 +1,5 @@
-import os, logging, json, threading, pygame, random, math
+import os, logging, json, threading, pygame, random, math, sys
+from random import randint
 
 import punchykickgravityflipwarz.colours
 from punchykickgravityflipwarz.sprite_sheet import SpriteSheet
@@ -14,12 +15,15 @@ PLAYER_SPEED = 5
 PLAYER_RADIUS = 15
 PLAYER_DIAMETER = 2 * PLAYER_RADIUS
 
+RESET_GAME = False
+
 class Player(Entity):
 
     def __init__(self, name, controls, sprite_sheet_file_name, game, location = (0,0)):
         super().__init__(location[0], location[1], TILE_SIZE, TILE_SIZE)
         logger.debug(f"Creating player [{name}].")
         self.name = name
+        self.lives = 3
         self.controls = controls
         self.vel_x = 0
         self.vel_y = 0
@@ -77,6 +81,8 @@ class Player(Entity):
                     self.item_type = None
                 for item in items:
                     self.game.items.add(item)
+        
+        self.death()
 
         # Left/right movement       
         if self.key_left:
@@ -136,6 +142,22 @@ class Player(Entity):
             self.vel_y = 0
 
         super().update_animation()
+
+    def death(self):
+        if (self.rect.x < 0):
+            self.lives -= 1
+            print(f"{self.name} died, {self.lives} lives remaining")
+            RESET_GAME = True;
+        elif (self.rect.x > 1920):
+            self.lives -= 1
+            print(f"{self.name} died, {self.lives} lives remaining")
+            RESET_GAME = True;
+        elif (self.rect.y > 1200):
+            self.lives -= 1
+            print(f"{self.name} died, {self.lives} lives remaining")
+            RESET_GAME = True;
+            
+
 
     def show(self, screen):
         super().show()
