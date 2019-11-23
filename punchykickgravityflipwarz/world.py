@@ -62,6 +62,7 @@ class World:
         print(len(self.tiles))
 
         self.surface = Surface((WIDTH, HEIGHT))
+        self.surface.convert()
         self.tiles.draw(self.surface)
 
     def get_world(self, screen):

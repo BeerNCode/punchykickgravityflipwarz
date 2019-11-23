@@ -12,9 +12,10 @@ It's in python.
 - Proc gen terrain
     - slighly bigger
     - more interesting shapes
-    
+
 - Sprites for tiles
 - Different types of tiles
+
 - game mechanics for falling off world
     - need to respawn
     - need a scoring system

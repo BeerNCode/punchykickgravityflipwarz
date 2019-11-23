@@ -1,7 +1,7 @@
 import pygame, threading, logging
 from random import randint
-
 import punchykickgravityflipwarz.colours
+from punchykickgravityflipwarz.item import *
 from punchykickgravityflipwarz.controls import Controls
 from punchykickgravityflipwarz.player import Player
 from punchykickgravityflipwarz.world import World
@@ -27,13 +27,15 @@ class Game:
     def __init__(self, screen):
         self.screen = screen
         self.players = pygame.sprite.Group()
+        self.items = pygame.sprite.Group()
         self.clock = pygame.time.Clock()
         self.start_ticks=pygame.time.get_ticks()
         self.running = True
         self.world = World()
+        self.item_types = []
 
-        self.players.add(Player("Bob", Controls(keys=CONTROLS[0]), "player.png", self.world))
-        self.players.add(Player("Dave", Controls(keys=CONTROLS[1]), "player_2.png", self.world))
+        self.players.add(Player("Bob", Controls(keys=CONTROLS[0]), "player.png", self))
+        self.players.add(Player("Dave", Controls(keys=CONTROLS[1]), "player_2.png", self))
 
     def run(self):
         while self.running:
@@ -41,8 +43,18 @@ class Game:
             self.update_events()
             
             self.players.update()
+            
+            # Sort out item logic
+            all_new_items = []
+            finished_items = []
+            for item in self.items:
+                item_finished, new_items = item.update()
+                if item_finished: finished_items.append(item)
+                for new_item in new_items: all_new_items.append(new_item)
+            for item in all_new_items: self.items.add(item)
+            for item in finished_items: self.items.remove(item)
 
-            self.render()
+            self.draw()
             
             self.update_timer()
             pygame.display.flip()
@@ -60,12 +72,11 @@ class Game:
                 logger.info(f"Resizing the window to {SCREEN_WIDTH}x{SCREEN_HEIGHT}.")
                 self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.RESIZABLE)
 
-    def render(self):
+    def draw(self):
         self.screen.fill(screen_colour)
-
         self.world.draw(self.screen)
-       
         self.players.draw(self.screen)
+        self.items.draw(self.screen)
 
     def update_timer(self):
         seconds=(pygame.time.get_ticks()-self.start_ticks)/1000 

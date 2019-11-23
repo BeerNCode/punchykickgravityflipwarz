@@ -4,6 +4,7 @@ import punchykickgravityflipwarz.colours
 from punchykickgravityflipwarz.sprite_sheet import SpriteSheet
 from punchykickgravityflipwarz.entity import Entity
 from punchykickgravityflipwarz.vector import Vector
+from punchykickgravityflipwarz.item import *
 
 logger = logging.getLogger(__name__)
 
@@ -15,7 +16,7 @@ PLAYER_DIAMETER = 2 * PLAYER_RADIUS
 
 class Player(Entity):
 
-    def __init__(self, name, controls, sprite_sheet_file_name, world):
+    def __init__(self, name, controls, sprite_sheet_file_name, game):
         super().__init__(0, 0, TILE_SIZE, TILE_SIZE)
         logger.debug(f"Creating player [{name}].")
         self.name = name
@@ -23,10 +24,11 @@ class Player(Entity):
         self.vel_x = 0
         self.vel_y = 0
         self.direction = 0
-        self.world = world
+        self.game = game
+        self.item_type = Grenades(self.game.world)
 
         # Setup the sprites/animation.
-        sheet = SpriteSheet(os.path.join('punchykickgravityflipwarz', 'resources', sprite_sheet_file_name))
+        sheet = SpriteSheet(os.path.join('punchykickgravityflipwarz', 'resources', sprite_sheet_file_name), colour_key=(163, 73, 164))
         super().add_sprite("stood_right", sheet, (0, 0, TILE_SIZE, TILE_SIZE))
         super().add_sprite("stood_left", sheet, (3*TILE_SIZE, TILE_SIZE, TILE_SIZE, TILE_SIZE))
         super().add_sprites("walking_right", sheet, (TILE_SIZE, 0, TILE_SIZE, TILE_SIZE), 3, (TILE_SIZE, 0))
@@ -60,8 +62,18 @@ class Player(Entity):
             self.key_right = keys[self.controls.keys["right"]]
             self.key_space = keys[self.controls.keys["space"]]
 
-    def update(self, ):
+    def update(self):
         self.capture_inputs()
+
+        # items
+        if self.item_type is not None:
+            self.item_type.update()
+            if self.key_space:
+                item_finished, items = self.item_type.action(self)
+                if item_finished:
+                    self.item_type = None
+                for item in items:
+                    self.game.items.add(item)
 
         # Left/right movement       
         if self.key_left:
@@ -81,7 +93,7 @@ class Player(Entity):
 
         self.rect.x += self.vel_x
  
-        tile_hit_list = pygame.sprite.spritecollide(self, self.world.tiles, False)
+        tile_hit_list = pygame.sprite.spritecollide(self, self.game.world.tiles, False)
         for tile in tile_hit_list:
             if self.vel_x > 0:
                 self.rect.right = tile.rect.left
@@ -89,11 +101,14 @@ class Player(Entity):
                 self.rect.left = tile.rect.right
 
         # up/down movement  
-        self.calculate_gravity()
+        if self.vel_y == 0:
+            self.vel_y = 1
+        else:
+            self.vel_y += .35
 
         if self.key_up:
             self.rect.y += 2
-            tile_hit_list = pygame.sprite.spritecollide(self, self.world.tiles, False)
+            tile_hit_list = pygame.sprite.spritecollide(self, self.game.world.tiles, False)
             self.rect.y -= 2
  
             if len(tile_hit_list) > 0:
@@ -101,7 +116,7 @@ class Player(Entity):
 
         self.rect.y += self.vel_y
 
-        tile_hit_list = pygame.sprite.spritecollide(self, self.world.tiles, False)
+        tile_hit_list = pygame.sprite.spritecollide(self, self.game.world.tiles, False)
         for tile in tile_hit_list:
             if self.vel_y > 0:
                 self.rect.bottom = tile.rect.top
@@ -110,13 +125,6 @@ class Player(Entity):
             self.vel_y = 0
 
         super().update_animation()
-
-    def calculate_gravity(self):
-        if self.vel_y == 0:
-            self.vel_y = 1
-        else:
-            self.vel_y += .35
-
 
     def show(self, screen):
         super().show()
