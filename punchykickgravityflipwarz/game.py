@@ -34,7 +34,7 @@ class Game:
         self.world = World()
         self.item_types = []
         
-        self.gravity_timer = 0
+        self.gravity_timer = 300
 
         self.players.add(Player("Bob", Controls(keys=CONTROLS[0]), "player.png", self))
         self.players.add(Player("Dave", Controls(keys=CONTROLS[1]), "player_2.png", self))
@@ -84,10 +84,10 @@ class Game:
         self.items.draw(self.screen)
 
     def gravity(self):
-        self.gravity_timer += 1
-        if self.gravity_timer == 100:
-            self.gravity_timer = 0
-            g = float(randint(10,100))/100
+        self.gravity_timer -= 1
+        if self.gravity_timer == 0:
+            self.gravity_timer = randint(10,200)
+            g = float(randint(-100,100))/100
             for p in self.players:
                 p.gravity = g
         
