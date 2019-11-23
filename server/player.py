@@ -92,11 +92,6 @@ class Player(Entity):
             elif self.vel_x < 0:
                 self.rect.left = block.rect.right
 
-        tile_hit_list = pygame.sprite.spritecollide(self, world.tiles, False)
-        if len(tile_hit_list) > 0:
-            logger.debug("hit")
-            self.rect.x -= self.vel_x
-
         if not movingHorizontally:
             if self.direction == 0:
                 super().set_sprite("stood_left")
