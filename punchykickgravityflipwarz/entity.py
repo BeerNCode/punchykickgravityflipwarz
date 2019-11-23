@@ -23,7 +23,6 @@ class Entity(pygame.sprite.Sprite):
         sprites = []
         for i in range(amount):
             r = (rectangle[0]+offset[0]*i, rectangle[1]+offset[1]*i,rectangle[2],rectangle[3])
-            logger.debug(r)
             sprite = sheet.image_at(r)
             sprite.set_colorkey((0, 0, 0))
             sprites.append(sprite)

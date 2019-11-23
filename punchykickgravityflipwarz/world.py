@@ -24,7 +24,7 @@ HEIGHT = 1000
 SHAPE = (WIDTH,HEIGHT)
 SCALE = 10.0
 OCTAVES = 10
-PERSISTANCE = 0.35;
+PERSISTANCE = 0.35
 LACUNARITY = 2.0
 
 tile_sprites = SpriteSheet(os.path.join('punchykickgravityflipwarz', 'resources', "block.jpg"))
