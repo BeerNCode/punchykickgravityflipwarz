@@ -4,6 +4,7 @@ import colours, os
 import sprite_sheet, logging
 from entity import Entity
 from vector import Vector
+from random import randint
 
 imageFile = os.path.join("server", "resources", "world.png")
 
@@ -19,8 +20,8 @@ class World:
         self.tiles = pygame.sprite.Group()
         self.scale = 8
 
-        for x in range(0, 20):
-            tile = Tile(x * TILE_SIZE, 200)
+        for x in range(0, 200):
+            tile = Tile(randint(0,128) * TILE_SIZE, randint(0,128)*TILE_SIZE)
             self.tiles.add(tile)
 
     def get_world(self, screen):
