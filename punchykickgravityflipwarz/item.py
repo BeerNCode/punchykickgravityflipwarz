@@ -116,17 +116,20 @@ class Grenade(Item):
 class Explosion(Item):
     def __init__(self, world, x, y):
         super().__init__(world, x-44, y-44, 96, 96)
-        self.timer = 100
-        self.frame = 36
+        self.frame = 6
         self.fixed = True
 
     def update(self):
         super().update()
         self.frame -= 1
         if self.frame <= 0: 
-            tile_hit_list = pygame.sprite.spritecollide(self, self.world.tiles, False)
-            for tile in tile_hit_list:
-                tile.damage += 100
-
+            for tile in self.world.tiles:
+                quadrance = self.get_quadrance_to(tile)
+                if quadrance < 100*100:
+                    tile.damage += 100
+                elif quadrance < 200*200: 
+                    tile.damage += 50
+                elif quadrance < 400*400: 
+                    tile.damage += 25
             return (True, [])
         else: return (False, [])
