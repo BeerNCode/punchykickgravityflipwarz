@@ -16,8 +16,8 @@ PLAYER_DIAMETER = 2 * PLAYER_RADIUS
 
 class Player(Entity):
 
-    def __init__(self, name, controls, sprite_sheet_file_name, game):
-        super().__init__(0, 0, TILE_SIZE, TILE_SIZE)
+    def __init__(self, name, controls, sprite_sheet_file_name, game, location = (0,0)):
+        super().__init__(location[0], location[1], TILE_SIZE, TILE_SIZE)
         logger.debug(f"Creating player [{name}].")
         self.name = name
         self.controls = controls

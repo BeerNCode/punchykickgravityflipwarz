@@ -38,6 +38,9 @@ class Game:
 
         self.players.add(Player("Bob", Controls(keys=CONTROLS[0]), "player.png", self))
         self.players.add(Player("Dave", Controls(keys=CONTROLS[1]), "player_2.png", self))
+        
+        for p in self.players:
+            self.world.find_empty_space(p)
 
     def run(self):
         while self.running:
