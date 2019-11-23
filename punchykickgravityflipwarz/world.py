@@ -42,8 +42,8 @@ class World:
             tile = Tile(x * TILE_SIZE, HEIGHT - 2 * TILE_SIZE)
             self.tiles.add(tile)
 
-        self.surface = Surface((WIDTH, HEIGHT))
-        self.surface.convert()
+        self.surface = Surface((WIDTH, HEIGHT)).convert()
+        self.surface.set_colorkey((0, 0, 0))
         self.tiles.draw(self.surface)
 
     def get_world(self, screen):
