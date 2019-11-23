@@ -11,8 +11,10 @@ imageFile = os.path.join("server", "resources", "world.png")
 logger = logging.getLogger(__name__)
 
 TILE_SIZE = 8
+WIDTH = 1024
+HEIGHT = 768
 
-tile_sprites = sprite_sheet.spritesheet(os.path.join('server', 'resources', "tiles.png"))
+tile_sprites = sprite_sheet.spritesheet(os.path.join('server', 'resources', "block.jpg"))
 
 class World:
     
@@ -20,11 +22,19 @@ class World:
         self.tiles = pygame.sprite.Group()
         self.scale = 8
 
-        for x in range(0, 20):
-            num = randint(0,128)
+        num = randint(0,10)
+        for y in range(0, 50):
+            num = num + randint(-10,15)
             num2 = randint(0,128)
-            for y in range(0,randint(0,20)):
-                tile = Tile((num + y) * TILE_SIZE, num2 * TILE_SIZE)
+            num3 = randint(5,30)
+            for x in range(0,randint(5,20)):
+                for z in range(0,num3):
+                    tile = Tile((num + x) * TILE_SIZE, (128 - num2) * TILE_SIZE + z)
+                    self.tiles.add(tile)
+
+        for x in range(0,WIDTH):
+            for y in range(0,10):    
+                tile = Tile(x, HEIGHT-y)
                 self.tiles.add(tile)
 
     def get_world(self, screen):
