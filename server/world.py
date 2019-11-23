@@ -21,7 +21,7 @@ class World:
         self.scale = 8
 
         for x in range(0, 200):
-            tile = Tile(x * TILE_SIZE, 300)
+            tile = Tile(randint(0, 128) * TILE_SIZE, randint(0, 128)*TILE_SIZE)
             self.tiles.add(tile)
 
     def get_world(self, screen):
