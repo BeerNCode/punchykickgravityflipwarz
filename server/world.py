@@ -2,6 +2,7 @@ from PIL import Image
 import pygame
 import colours, os
 import sprite_sheet, logging
+from pygame import Surface
 from entity import Entity
 from vector import Vector
 from random import randint
@@ -22,9 +23,23 @@ class World:
         self.tiles = pygame.sprite.Group()
         self.scale = 8
 
-        for x in range(0, 200):
-            tile = Tile(x * TILE_SIZE, 300)
-            self.tiles.add(tile)
+        num = randint(0,10)
+        for y in range(0, 50):
+            num = num + randint(-10,15)
+            num2 = randint(0,128)
+            num3 = randint(5,30)
+            for x in range(0,randint(5,20)):
+                for z in range(0,num3):
+                    tile = Tile((num + x) * TILE_SIZE, (128 - num2) * TILE_SIZE + z)
+                    self.tiles.add(tile)
+
+        for x in range(0,WIDTH):
+            for y in range(0,10):    
+                tile = Tile(x, HEIGHT-y)
+                self.tiles.add(tile)
+
+        self.surface = Surface((WIDTH, HEIGHT))
+        self.tiles.draw(self.surface)
 
     def get_world(self, screen):
         img = Image.open(imageFile)
@@ -44,7 +59,7 @@ class World:
                     pygame.draw.rect(screen, colours.WHITE, [i*self.scale, j*self.scale, self.scale, self.scale], 0)
 
     def show(self, screen):
-        self.tiles.draw(screen)
+        screen.blit(self.surface, (0, 0))
 
     def get_index(self, x, y, width):
         return y * width + x
