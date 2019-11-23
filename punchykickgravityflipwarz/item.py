@@ -124,12 +124,6 @@ class Explosion(Item):
         super().update()
         self.frame -= 1
         if self.frame <= 0: 
-<<<<<<< HEAD
-            tile_hit_list = pygame.sprite.spritecollide(self, self.world.tiles, False)
-            for tile in tile_hit_list:
-                tile.health -= 100
-                tile.hit = True
-=======
             for tile in self.world.tiles:
                 quadrance = self.get_quadrance_to(tile)
                 if quadrance < 100*100:
@@ -138,7 +132,6 @@ class Explosion(Item):
                     tile.damage += 50
                 elif quadrance < 400*400: 
                     tile.damage += 25
->>>>>>> 4031118a03b9e436ba0c76f5c0e21d5ba55ecba8
             return (True, [])
         else: 
             return (False, [])
