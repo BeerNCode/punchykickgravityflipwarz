@@ -22,6 +22,10 @@ screen_colour = (randint(0,255),randint(0,255),randint(0,255))
 
 logger = logging.getLogger(__name__)
 
+sprite_sheets = {
+}
+
+
 class Game:
    
     def __init__(self, screen):

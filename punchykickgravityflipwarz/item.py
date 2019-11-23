@@ -136,3 +136,50 @@ class Explosion(Item):
         else: 
             return (False, [])
             
+class Gun(ItemType):
+    def __init__(self, world):
+        super().__init__(world)
+        self.name = "Gun"
+        self.item_size = 16
+        self.grenades_sheet = SpriteSheet(os.path.join('punchykickgravityflipwarz', 'resources', "grenade.png"))
+        self.max_time_out = 5
+        self.time_out = 0
+
+    def action(self, player):
+        if self.time_out != 0:
+            return (False, [])
+
+        super().action(player)
+        self.time_out = self.max_time_out
+
+        bullet = Bullet(self.world, player.rect.x, player.rect.y, self.explosion_sheet)
+        bullet.add_sprite("default", self.grenades_sheet, (0, 0, self.item_size, self.item_size))
+        bullet.set_sprite("default")
+        bullet.update_animation()
+
+        if player.direction == 0:
+            bullet.vel_x = -16
+        else:
+            bullet.vel_x = 16
+
+        return (False, [bullet]) # returns whether its used up, and any items needed to be created.
+
+    def update(self):
+        if self.time_out > 0:
+            self.time_out -= 1
+
+class Bullet(Item):
+    def __init__(self, world, x, y):
+        super().__init__(world, x, y, 16, 16)
+
+    def update(self):
+        super().update()
+        self.timer -= 1
+        if self.timer <= 0:
+            offset = 8-96/2.0
+            explosion = Explosion(self.world, self.rect.x+offset, self.rect.y+offset)
+            explosion.add_sprites("default", self.explosion_sheet, (0, 0, 96, 96), 6, (0, 96))
+            explosion.set_sprite("default")
+            explosion.update_animation()
+            return (True, [explosion])
+        return (False, [])
