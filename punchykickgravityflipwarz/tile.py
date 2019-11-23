@@ -14,3 +14,14 @@ class Tile(Entity):
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
+
+    def tile_type(self, tile_value):
+        if tile_value < 0.03:
+            self.image.fill(colours.BLUE)
+        elif tile_value < 0.1:
+            self.image.fill(colours.BROWN)
+        elif tile_value < 1.0:
+            self.image.fill(colours.GREEN)
+
+
+    

@@ -36,17 +36,14 @@ class World:
         self.scale = 8
         self.noisy_world = np.zeros(SHAPE)
 
-        for x in range(0, int(math.floor(WIDTH / TILE_SIZE))):
-            tile = Tile(x * TILE_SIZE, HEIGHT - 2 * TILE_SIZE)
-            self.tiles.add(tile)
-
         self.noisy_world = self.generate_noise(SHAPE, SCALE, OCTAVES, PERSISTANCE, LACUNARITY)
 
         for i in range(0, int(math.floor(SHAPE[0]/TILE_SIZE))):
             for j in range(0, int(math.floor(SHAPE[1]/TILE_SIZE))):
-                threshold = 1/(0.5*j + 1) - 0.12;
+                threshold = 1/(0.3*math.pow(j,2) + 1) - 0.1
                 if (self.noisy_world[i][j] > threshold):
                     tile = Tile(i * TILE_SIZE, j * TILE_SIZE)
+                    tile.tile_type(self.noisy_world[i][j])
                     self.tiles.add(tile)
 
         self.surface = Surface((WIDTH, HEIGHT))
